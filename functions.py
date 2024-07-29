@@ -7,12 +7,15 @@ from config import OPENAI_API_KEY
 openai.api_key = OPENAI_API_KEY
 
 def call_openai(prompt):
-    response = openai.Completion.create(
+    response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        prompt=prompt,
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt}
+        ],
         max_tokens=150
     )
-    return response.choices[0].text.strip()
+    return response['choices'][0]['message']['content'].strip()
 
 def call_huggingface(model_name, prompt):
     generator = pipeline('text-generation', model=model_name)
